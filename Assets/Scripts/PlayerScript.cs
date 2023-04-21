@@ -53,4 +53,12 @@ public class PlayerScript : MonoBehaviour
             jump = false;
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Pickup"))
+        {
+            Destroy(collision.gameObject);
+        }
+    }
 }
