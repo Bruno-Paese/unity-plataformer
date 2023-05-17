@@ -7,6 +7,8 @@ public class PlayerScript : MonoBehaviour
 	public float speed = 10.0f;
     public float jumpForce;
 	public float maxSpeed;
+    public GameObject itemFeedback;
+
     bool jump = false;
 	float horizontal;
 	Rigidbody2D rb;
@@ -27,7 +29,7 @@ public class PlayerScript : MonoBehaviour
 		horizontal = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(speed * horizontal, rb.velocity.y);
 
-        if (Input.GetButton("Jump") && Mathf.Abs(rb.velocity.y) < 0.1f)
+        if (Input.GetButton("Jump") && Mathf.Abs(rb.velocity.y) < 0.01f)
         {
             jump = true;
         }
@@ -58,7 +60,9 @@ public class PlayerScript : MonoBehaviour
     {
         if (collision.CompareTag("Pickup"))
         {
+            
             Destroy(collision.gameObject);
+            Instantiate(itemFeedback, collision.transform.position, collision.transform.rotation);
         }
     }
 }
