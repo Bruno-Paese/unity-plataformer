@@ -60,9 +60,23 @@ public class PlayerScript : MonoBehaviour
     {
         if (collision.CompareTag("Pickup"))
         {
-            
+            GameManager.gm.addGem();
             Destroy(collision.gameObject);
             Instantiate(itemFeedback, collision.transform.position, collision.transform.rotation);
+        }
+
+        if (collision.CompareTag("Enemy"))
+        {
+            Debug.Log("Nem Eras");
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            jump = true;
+            Destroy(collision.gameObject);
         }
     }
 }
