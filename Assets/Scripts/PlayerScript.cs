@@ -8,12 +8,16 @@ public class PlayerScript : MonoBehaviour
     public float jumpForce;
 	public float maxSpeed;
     public GameObject itemFeedback;
+    public GameObject enemyDeath;
+    public AudioClip jumpSFX, pickupSFX;
 
     bool jump = false;
 	float horizontal;
+    bool canControlPlayer = true;
 	Rigidbody2D rb;
     SpriteRenderer sr;
     Animator anim;
+    AudioSource audioPlayer;
 
     // Start is called before the first frame update
     void Start()
@@ -21,17 +25,23 @@ public class PlayerScript : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
+        audioPlayer = GetComponentInChildren<AudioSource>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!canControlPlayer)
+        {
+            return;
+        }
 		horizontal = Input.GetAxis("Horizontal");
         rb.velocity = new Vector2(speed * horizontal, rb.velocity.y);
 
         if (Input.GetButton("Jump") && Mathf.Abs(rb.velocity.y) < 0.01f)
         {
             jump = true;
+            audioPlayer.PlayOneShot(jumpSFX);
         }
 
         anim.SetFloat("Speed", Mathf.Abs(horizontal));
@@ -63,12 +73,27 @@ public class PlayerScript : MonoBehaviour
             GameManager.gm.addGem();
             Destroy(collision.gameObject);
             Instantiate(itemFeedback, collision.transform.position, collision.transform.rotation);
+            audioPlayer.PlayOneShot(pickupSFX);
         }
 
         if (collision.CompareTag("Enemy"))
         {
             Debug.Log("Nem Eras");
+            StartCoroutine(PlayerDeath());
         }
+    }
+
+    IEnumerator PlayerDeath()
+    {
+        canControlPlayer = false;
+        rb.velocity = Vector2.zero;
+        rb.isKinematic = true;
+        GetComponent<CapsuleCollider2D>().enabled = false;
+        anim.SetTrigger("PlayerDeath");
+        yield return new WaitForSeconds(3.0f);
+        GameManager.gm.ReloadScene();
+        canControlPlayer = true;
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -77,6 +102,7 @@ public class PlayerScript : MonoBehaviour
         {
             jump = true;
             Destroy(collision.gameObject);
+            Instantiate(enemyDeath, collision.transform.position, collision.transform.rotation);
         }
     }
 }
