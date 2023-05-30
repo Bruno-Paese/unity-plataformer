@@ -9,10 +9,12 @@ public class GameManager : MonoBehaviour
     public Text gemQuantity;
     public static GameManager gm;
     public GameObject pausePannel;
+    public int totalGems;
 
     int gems = 0;
     bool isPaused = false;
     Scene scn;
+    private GameObject[] getCount;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +22,8 @@ public class GameManager : MonoBehaviour
         gemQuantity.text = gems.ToString("00");
         scn = SceneManager.GetActiveScene();
         pausePannel.SetActive(false);
+        getCount = GameObject.FindGameObjectsWithTag("Pickup");
+        totalGems = getCount.Length;
     }
 
     // Update is called once per frame
@@ -34,7 +38,12 @@ public class GameManager : MonoBehaviour
     public void addGem()
     {
         gems++;
-         gemQuantity.text = gems.ToString("00");
+        gemQuantity.text = gems.ToString("00") + "/" + totalGems;
+        if (gems >= totalGems)
+        {
+            SceneManager.LoadScene(scn.buildIndex + 1);
+            PlayerPrefs.SetInt("level" + (scn.buildIndex).ToString() + "Unlocked", 1);
+        }
     }
 
     public void ReloadScene()
