@@ -76,7 +76,7 @@ public class PlayerScript : MonoBehaviour
             audioPlayer.PlayOneShot(pickupSFX);
         }
 
-        if (collision.CompareTag("Enemy"))
+        if (collision.CompareTag("Enemy") || collision.CompareTag("RespawnEnemy"))
         {
             StartCoroutine(PlayerDeath());
         }
