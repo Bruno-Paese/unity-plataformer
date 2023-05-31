@@ -78,9 +78,13 @@ public class PlayerScript : MonoBehaviour
 
         if (collision.CompareTag("Enemy"))
         {
-            Debug.Log("Nem Eras");
             StartCoroutine(PlayerDeath());
         }
+    }
+
+    public void die()
+    {
+        StartCoroutine(PlayerDeath());
     }
 
     IEnumerator PlayerDeath()
@@ -96,13 +100,23 @@ public class PlayerScript : MonoBehaviour
 
     }
 
+    IEnumerator RespawnEnemy(GameObject gm)
+    {
+        yield return new WaitForSeconds(10.0f);
+        gm.SetActive(true);
+
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("RespawnEnemy"))
         {
             jump = true;
-            Destroy(collision.gameObject);
+            //Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
             Instantiate(enemyDeath, collision.transform.position, collision.transform.rotation);
+            if (collision.gameObject.CompareTag("RespawnEnemy"))
+                StartCoroutine(RespawnEnemy(collision.gameObject));
         }
     }
 }
