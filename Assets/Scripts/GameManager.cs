@@ -44,7 +44,7 @@ public class GameManager : MonoBehaviour
     public void addGem()
     {
         gems++;
-        gemQuantity.text = gems.ToString("00") + "/" + totalGems;
+        gemQuantity.text = gems.ToString() + "/" + totalGems;
         if (gems >= totalGems)
         {
             SceneManager.LoadScene(scn.buildIndex + 1);
@@ -62,5 +62,10 @@ public class GameManager : MonoBehaviour
         isPaused = !isPaused;
         Time.timeScale = isPaused ? 0 : 1;
         pausePannel.SetActive(isPaused);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 }
