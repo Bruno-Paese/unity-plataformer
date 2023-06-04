@@ -57,6 +57,11 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(scn.buildIndex);
     }
 
+    public void LoadMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
     public void PauseGame()
     {
         isPaused = !isPaused;
